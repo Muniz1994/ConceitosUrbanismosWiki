@@ -17,6 +17,7 @@ export function carregarConceitos(): Promise<Conceito[]> {
         ficheiro: e.filePath ? path.normalize(e.filePath) : e.id,
         dados: e.data,
         corpo: e.body,
+        corpoHtml: e.rendered?.html,
       })),
     );
     validarFiguras(conceitos, figuras.map((f) => f.id));

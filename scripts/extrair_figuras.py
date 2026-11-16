@@ -22,9 +22,9 @@ DESTINO = RAIZ / "src" / "assets" / "figuras"
 
 # id: (página do PDF, retângulo em pontos: x0, y0, x1, y1)
 RECORTES: dict[str, tuple[int, tuple[float, float, float, float]]] = {
-    "figura-1a": (81, (90, 140, 462, 330)),
-    "figura-1b": (81, (90, 400, 462, 600)),
-    "figura-2": (82, (90, 110, 460, 545)),
+    "figura-1a": (81, (90, 140, 452, 330)),
+    "figura-1b": (81, (90, 400, 452, 600)),
+    "figura-2": (82, (90, 110, 452, 545)),
     "figura-3a": (83, (88, 118, 460, 395)),
     "figura-3b": (83, (88, 436, 460, 620)),
     "figura-4a": (84, (84, 90, 502, 362)),

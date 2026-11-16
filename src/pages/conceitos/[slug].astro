@@ -1,0 +1,180 @@
+---
+import type { GetStaticPaths, ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { ArrowLeft, ArrowRight, Pencil } from 'lucide-react';
+import Figura from '@/components/conceito/Figura';
+import TextoOficial from '@/components/conceito/TextoOficial.astro';
+import { Badge } from '@/components/ui/badge';
+import Base from '@/layouts/Base.astro';
+import { t } from '@/i18n/pt-PT';
+import { carregarGrafo } from '@/lib/colecao';
+import { ligarWikilinksHtml } from '@/lib/comentario';
+import type { Conceito } from '@/lib/conteudo';
+import { formatarUnidades } from '@/lib/texto';
+import { urlConceito, urlEditar } from '@/lib/url';
+
+export const getStaticPaths = (async () => {
+  const { conceitos } = await carregarGrafo();
+  return conceitos.map((conceito) => ({ params: { slug: conceito.slug }, props: { conceito } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  conceito: Conceito;
+}
+const { conceito: c } = Astro.props;
+const grafo = await carregarGrafo();
+
+// Anterior e seguinte pela ordem das fichas, dentro do mesmo anexo.
+const doAnexo = grafo.conceitos.filter((x) => x.anexo === c.anexo);
+const posicao = doAnexo.findIndex((x) => x.slug === c.slug);
+const anterior = doAnexo[posicao - 1];
+const seguinte = doAnexo[posicao + 1];
+
+// Figuras: imagem otimizada para a página e versão maior para a vista ampliada.
+const imagens = import.meta.glob<{ default: ImageMetadata }>('/src/assets/figuras/*.png', { eager: true });
+const figurasDados = new Map((await getCollection('figuras')).map((f) => [f.id, f.data]));
+const figuras = await Promise.all(
+  c.figuras.map(async (id) => {
+    const dados = figurasDados.get(id)!;
+    const original = imagens[`/src/assets/figuras/${dados.ficheiro}`]!.default;
+    const [pequena, grande] = await Promise.all([
+      getImage({ src: original, width: Math.min(900, original.width), format: 'webp' }),
+      getImage({ src: original, width: Math.min(1800, original.width), format: 'webp' }),
+    ]);
+    return {
+      id,
+      legenda: dados.legenda,
+      alt: dados.alt,
+      pagina: dados.pagina_dr,
+      src: pequena.src,
+      largura: Number(pequena.attributes.width ?? original.width),
+      altura: Number(pequena.attributes.height ?? original.height),
+      srcGrande: grande.src,
+    };
+  }),
+);
+
+const comentarioHtml = c.comentarioHtml ? ligarWikilinksHtml(c.comentarioHtml, grafo.indice, urlConceito) : '';
+const editar = urlEditar(c.ficheiro);
+---
+<Base seccao="conceito" titulo={c.conceito} descricao={c.definicao} slugAtual={c.slug} barraLateral>
+  <article class="mx-auto max-w-3xl" data-pagina-conceito={c.slug}>
+    <header class="space-y-3">
+      <p class="flex items-center gap-2 text-sm text-muted-foreground" data-ficha>
+        <span class:list={['size-2 rounded-full', c.anexo === 'I' ? 'bg-anexo-i' : 'bg-anexo-ii']} aria-hidden="true" />
+        <span>{t.anexo[c.anexo]} · {t.conceito.ficha} {c.ficha}</span>
+      </p>
+      <h1 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{c.conceito}</h1>
+      {
+        (c.abreviatura || c.unidades) && (
+          <div class="flex flex-wrap gap-2">
+            {c.abreviatura && (
+              <Badge variant="outline" className="h-7 gap-1.5 px-2.5 text-sm" data-abreviatura>
+                <span class="text-muted-foreground">{t.conceito.abreviatura}</span>
+                <span class="font-semibold">{c.abreviatura}</span>
+              </Badge>
+            )}
+            {c.unidades && (
+              <Badge variant="outline" className="h-7 gap-1.5 px-2.5 text-sm" data-unidades>
+                <span class="text-muted-foreground">{t.conceito.unidades}</span>
+                <span class="font-semibold">{formatarUnidades(c.unidades)}</span>
+              </Badge>
+            )}
+          </div>
+        )
+      }
+    </header>
+
+    <section class="mt-8" aria-labelledby="definicao">
+      <h2 id="definicao" class="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        {t.conceito.definicao}
+      </h2>
+      <blockquote class="rounded-r-xl border-l-4 border-primary bg-muted/50 px-5 py-4 text-lg leading-relaxed text-pretty" data-definicao>
+        <TextoOficial texto={c.definicao} figuras={c.figuras} />
+      </blockquote>
+    </section>
+
+    {
+      c.notas.length > 0 && (
+        <section class="mt-8" aria-labelledby="notas">
+          <h2 id="notas" class="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            {t.conceito.notas}
+          </h2>
+          <ul class="space-y-3 leading-relaxed" data-notas>
+            {c.notas.map((nota) => (
+              <li class="relative pl-5 text-pretty before:absolute before:top-[0.7em] before:left-1 before:size-1.5 before:rounded-full before:bg-muted-foreground/60">
+                <TextoOficial texto={nota} figuras={c.figuras} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      figuras.length > 0 && (
+        <section class="mt-10" aria-labelledby="figuras">
+          <h2 id="figuras" class="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            {t.conceito.figuras}
+          </h2>
+          <div class="grid gap-4">
+            {figuras.map((f) => (
+              <Figura client:visible {...f} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      comentarioHtml && (
+        <section class="mt-10 rounded-xl border border-dashed p-5" aria-labelledby="comentario" data-comentario>
+          <h2 id="comentario" class="text-base font-semibold">{t.conceito.comentario}</h2>
+          <p class="mt-1 text-xs text-muted-foreground">{t.conceito.comentarioNota}</p>
+          <div class="conteudo-comentario mt-4" set:html={comentarioHtml} />
+        </section>
+      )
+    }
+
+    <slot name="ligacoes" />
+
+    <nav class="mt-12 grid gap-3 border-t pt-6 sm:grid-cols-2" aria-label={`${t.conceito.anterior} / ${t.conceito.seguinte}`}>
+      {
+        anterior ? (
+          <a href={urlConceito(anterior.slug)} rel="prev" class="group rounded-lg border p-4 hover:bg-accent" data-anterior>
+            <span class="flex items-center gap-1 text-xs text-muted-foreground">
+              <ArrowLeft className="size-3" aria-hidden="true" />
+              {t.conceito.anterior}
+            </span>
+            <span class="mt-1 block font-medium">{anterior.conceito}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        seguinte && (
+          <a href={urlConceito(seguinte.slug)} rel="next" class="group rounded-lg border p-4 text-right hover:bg-accent sm:col-start-2" data-seguinte>
+            <span class="flex items-center justify-end gap-1 text-xs text-muted-foreground">
+              {t.conceito.seguinte}
+              <ArrowRight className="size-3" aria-hidden="true" />
+            </span>
+            <span class="mt-1 block font-medium">{seguinte.conceito}</span>
+          </a>
+        )
+      }
+    </nav>
+
+    {
+      editar && (
+        <p class="mt-6 text-sm">
+          <a href={editar} class="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground" data-editar>
+            <Pencil className="size-3.5" aria-hidden="true" />
+            {t.conceito.editar}
+          </a>
+        </p>
+      )
+    }
+  </article>
+</Base>

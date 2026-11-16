@@ -145,3 +145,38 @@
     @apply outline-2 outline-offset-2 outline-ring;
   }
 }
+
+@layer components {
+  /* Ligações a conceitos dentro do texto oficial (menções derivadas): discretas. */
+  .ligacao-mencao {
+    @apply underline decoration-muted-foreground/40 decoration-1 underline-offset-[5px] transition-colors hover:decoration-foreground;
+  }
+  /* Ligações explícitas (comentário). */
+  .ligacao-conceito {
+    @apply font-medium underline decoration-primary/40 underline-offset-4 hover:decoration-primary;
+  }
+  .conteudo-comentario {
+    @apply space-y-3 leading-relaxed;
+  }
+  .conteudo-comentario :is(h2, h3, h4) {
+    @apply mt-5 font-semibold;
+  }
+  .conteudo-comentario :is(ul, ol) {
+    @apply space-y-1 pl-5;
+  }
+  .conteudo-comentario ul {
+    @apply list-disc;
+  }
+  .conteudo-comentario ol {
+    @apply list-decimal;
+  }
+  .conteudo-comentario a:not(.ligacao-conceito) {
+    @apply underline underline-offset-4;
+  }
+  .conteudo-comentario blockquote {
+    @apply border-l-2 pl-4 text-muted-foreground;
+  }
+  .conteudo-comentario code {
+    @apply rounded bg-muted px-1 py-0.5 font-mono text-sm;
+  }
+}

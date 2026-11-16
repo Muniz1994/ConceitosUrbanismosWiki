@@ -24,6 +24,8 @@ export interface Conceito {
   figuras: string[];
   /** Corpo Markdown (comentário pessoal), possivelmente vazio. */
   comentario: string;
+  /** Comentário renderizado em HTML pelo Astro (sem as ligações `[[...]]` resolvidas). */
+  comentarioHtml: string;
 }
 
 export class ErroConteudo extends Error {
@@ -48,6 +50,7 @@ export interface EntradaBruta {
     figuras: string[];
   };
   corpo?: string;
+  corpoHtml?: string;
 }
 
 /** Converte as entradas validadas pelo esquema em conceitos e verifica duplicados. */
@@ -56,7 +59,7 @@ export function construirConceitos(entradas: EntradaBruta[]): Conceito[] {
   const porFicha = new Map<string, string>();
   const erros: string[] = [];
 
-  const conceitos = entradas.map(({ ficheiro, dados, corpo }) => {
+  const conceitos = entradas.map(({ ficheiro, dados, corpo, corpoHtml }) => {
     const slug = slugify(dados.conceito);
     const outroSlug = porSlug.get(slug);
     if (outroSlug) {
@@ -76,6 +79,7 @@ export function construirConceitos(entradas: EntradaBruta[]): Conceito[] {
       ficheiro,
       numero: Number(dados.ficha.split('-')[1]),
       comentario: (corpo ?? '').trim(),
+      comentarioHtml: (corpo ?? '').trim() ? (corpoHtml ?? '').trim() : '',
     } satisfies Conceito;
   });
 

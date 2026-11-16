@@ -28,10 +28,10 @@
 
 ## 5. Concept pages and browsing
 
-- [ ] 5.1 Build `/conceitos/[slug]/`: header (annex and ficha, abbreviation and units badges), definition block, notes list, commentary section with rendered `[[...]]` links, previous/next within the annex, and a GitHub edit link; verify with Playwright on `Afastamento` (I-1, `Af`, `m`) and `Alçado` (no badges), and on the last Anexo I ficha (no next link)
-- [ ] 5.2 Add figures: an `<Image>` with caption and alternative text, an enlarge Dialog closing on Escape, and "Ver Figura N" in notes linked to the on-page anchor; verify with Playwright on `Altura da fachada` (Figura 3a enlarges and closes) and on `Afastamento` (the `Figura 1` link jumps to 1a)
-- [ ] 5.3 Build the annex sidebar (grouped `Anexo I`/`Anexo II`, ficha order, current concept highlighted and scrolled into view, Sheet on narrow screens); verify with Playwright at desktop and 360 px widths
-- [ ] 5.4 Build the `Índice` page (A–Z with pt-PT collation and accent-free grouping, name/abbreviation/annex/start of definition, combinable `Anexo` and `com abreviatura` filters); add a Vitest test for the collation order `Altura entre pisos` < `Área total de construção` < `Atualização cartográfica`, and a Playwright test of the combined filters
+- [x] 5.1 Build `/conceitos/[slug]/`: header (annex and ficha, abbreviation and units badges), definition block, notes list, commentary section with rendered `[[...]]` links, previous/next within the annex, and a GitHub edit link; verify with Playwright on `Afastamento` (I-1, `Af`, `m`) and `Alçado` (no badges), and on the last Anexo I ficha (no next link)
+- [x] 5.2 Add figures: an `<Image>` with caption and alternative text, an enlarge Dialog closing on Escape, and "Ver Figura N" in notes linked to the on-page anchor; verify with Playwright on `Altura da fachada` (Figura 3a enlarges and closes) and on `Afastamento` (the `Figura 1` link jumps to 1a)
+- [x] 5.3 Build the annex sidebar (grouped `Anexo I`/`Anexo II`, ficha order, current concept highlighted and scrolled into view, Sheet on narrow screens); verify with Playwright at desktop and 360 px widths
+- [x] 5.4 Build the `Índice` page (A–Z with pt-PT collation and accent-free grouping, name/abbreviation/annex/start of definition, combinable `Anexo` and `com abreviatura` filters); add a Vitest test for the collation order `Altura entre pisos` < `Área total de construção` < `Atualização cartográfica`, and a Playwright test of the combined filters
 
 ## 6. Connections
 

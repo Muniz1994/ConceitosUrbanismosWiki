@@ -1,0 +1,28 @@
+---
+/** Texto do decreto com ligações a figuras e a conceitos mencionados; as palavras não são alteradas. */
+import { segmentarTexto, type Intervalo } from '@/lib/segmentos';
+import { urlConceito } from '@/lib/url';
+
+interface Props {
+  texto: string;
+  figuras?: string[];
+  mencoes?: Intervalo[];
+}
+const { texto, figuras = [], mencoes = [] } = Astro.props;
+const segmentos = segmentarTexto(texto, { figuras, mencoes });
+---
+{
+  segmentos.map((s) =>
+    s.tipo === 'texto' ? (
+      <Fragment set:text={s.texto} />
+    ) : s.tipo === 'figura' ? (
+      <a href={`#${s.figura}`} class="font-medium underline decoration-dotted underline-offset-4 hover:decoration-solid" data-ligacao-figura={s.figura}>
+        {s.texto}
+      </a>
+    ) : (
+      <a href={urlConceito(s.slug)} data-conceito={s.slug} class="ligacao-mencao">
+        {s.texto}
+      </a>
+    ),
+  )
+}
