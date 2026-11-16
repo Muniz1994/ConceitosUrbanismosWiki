@@ -1,0 +1,28 @@
+---
+// Página de verificação dos componentes shadcn (não ligada a partir do site).
+import '@/styles/global.css';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+---
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Verificação UI</title>
+  </head>
+  <body class="grid grid-cols-2">
+    <section class="bg-background text-foreground p-8 space-y-4" data-tema="claro">
+      <Button>Pesquisar</Button>
+      <Badge>Af</Badge>
+      <Badge variant="secondary">m²</Badge>
+    </section>
+    <div class="dark">
+      <section class="bg-background text-foreground p-8 space-y-4 h-full" data-tema="escuro">
+        <Button>Pesquisar</Button>
+        <Badge>Af</Badge>
+        <Badge variant="secondary">m²</Badge>
+      </section>
+    </div>
+  </body>
+</html>

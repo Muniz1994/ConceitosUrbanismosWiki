@@ -1,0 +1,55 @@
+# Figuras exemplificativas do Decreto Regulamentar n.º 5/2019 (Anexo I, ponto 1.3).
+# Imagens extraídas com scripts/extrair_figuras.py para src/assets/figuras/.
+figura-1a:
+  ficheiro: figura-1a.png
+  legenda: "Figura 1a — Alinhamento; Afastamento; Recuo"
+  alt: >-
+    Planta de um prédio com um edifício implantado, confinante com a via pública. Indica o
+    alinhamento entre o domínio público e o domínio privado, o afastamento (Af) entre a
+    fachada e a estrema do prédio e o recuo (Re) entre a fachada e o alinhamento.
+  pagina_dr: 87
+figura-1b:
+  ficheiro: figura-1b.png
+  legenda: "Figura 1b — Área de implantação; Polígono de implantação"
+  alt: >-
+    Planta de um prédio junto à via, com a área de implantação do edifício (Aimp) a tracejado
+    escuro, contida no polígono de implantação, a ponteado mais claro.
+  pagina_dr: 87
+figura-2:
+  ficheiro: figura-2.png
+  legenda: "Figura 2 — Alçado"
+  alt: >-
+    Em cima, a planta de um conjunto de três edifícios (A, B e C) junto a uma via, estando o
+    edifício B rodado. Em baixo, o alçado do mesmo conjunto, obtido por projeção num plano
+    vertical paralelo ao eixo da via.
+  pagina_dr: 88
+figura-3a:
+  ficheiro: figura-3a.png
+  legenda: "Figura 3a — Altura da fachada; Altura da edificação"
+  alt: >-
+    Cortes de três edifícios, em terreno plano e em terreno inclinado, com a altura da fachada
+    (HF, HF2) e a altura da edificação (H) medidas a partir da cota de soleira (S, S2).
+  pagina_dr: 89
+figura-3b:
+  ficheiro: figura-3b.png
+  legenda: "Figura 3b — Cota de soleira; Elevação da soleira"
+  alt: >-
+    Dois cortes da entrada de um edifício. À esquerda, a soleira (S) abaixo da cota do
+    arruamento, com elevação da soleira negativa (Es<0); à direita, a soleira acima da cota
+    do arruamento, com elevação positiva (Es>0).
+  pagina_dr: 89
+figura-4a:
+  ficheiro: figura-4a.png
+  legenda: "Figura 4a — Área de construção do edifício"
+  alt: >-
+    Corte de um edifício de vários pisos, com cobertura inclinada, varanda, corpo balançado e
+    mezanino, assinalando a escuro as superfícies que contam para a área de construção (Ac).
+  pagina_dr: 90
+figura-4b:
+  ficheiro: figura-4b.png
+  legenda: "Figura 4b — Área de implantação do edifício"
+  alt: >-
+    Oito esquemas de edifícios em alçado, cada um com a respetiva planta por baixo, mostrando
+    a escuro a área de implantação do edifício (Ai) em diferentes configurações de volumes e
+    saliências, incluindo um edifício que se estende sobre a via pública.
+  pagina_dr: 90

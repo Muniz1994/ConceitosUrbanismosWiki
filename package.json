@@ -1,0 +1,49 @@
+{
+  "name": "conceitos-urbanismo-wiki",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Wiki dos conceitos técnicos do Decreto Regulamentar n.º 5/2019",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:validacao": "node scripts/testar-validacao.mjs",
+    "importar": "tsx scripts/importar-csv.ts"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.0.1",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "~7.3.8",
+    "class-variance-authority": "^0.7.1",
+    "cmdk": "^1.1.1",
+    "cn": "^0.5.2",
+    "lucide-react": "^1.73.0",
+    "radix-ui": "^1.8.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "shadcn": "^4.23.0",
+    "tailwindcss": "^4.3.5",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@playwright/test": "^1.65.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "csv-parse": "^7.0.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0",
+    "yaml": "^2.9.1"
+  }
+}

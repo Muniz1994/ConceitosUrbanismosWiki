@@ -1,0 +1,16 @@
+---
+import '@/styles/global.css';
+import { carregarGrafo } from '@/lib/colecao';
+const { conceitos } = await carregarGrafo();
+---
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Conceitos DR 5/2019</title>
+  </head>
+  <body>
+    <h1 class="text-2xl font-semibold">Conceitos DR 5/2019</h1>
+    <p>{conceitos.length} conceitos</p>
+  </body>
+</html>

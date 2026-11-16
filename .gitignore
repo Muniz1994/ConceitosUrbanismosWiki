@@ -1,0 +1,22 @@
+# dependências e build
+node_modules/
+dist/
+.astro/
+
+# testes
+test-results/
+playwright-report/
+blob-report/
+coverage/
+
+# sistema / editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.obsidian/workspace*.json
+
+# ambiente
+.env
+.env.*
+dist-validacao/
