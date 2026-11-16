@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import AlternarTema from '@/components/AlternarTema';
 import BarraLateral from '@/components/BarraLateral.astro';
 import MenuMovel from '@/components/MenuMovel';
+import Pesquisa from '@/components/Pesquisa';
 import VistaPrevia from '@/components/VistaPrevia';
 import { t } from '@/i18n/pt-PT';
 import { carregarGrafo } from '@/lib/colecao';
@@ -124,6 +125,7 @@ const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
         <p>{t.site.fonte}.</p>
       </div>
     </footer>
+    <Pesquisa client:load />
     <VistaPrevia client:idle />
   </body>
 </html>

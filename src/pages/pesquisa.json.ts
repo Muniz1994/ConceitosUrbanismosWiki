@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { carregarGrafo } from '@/lib/colecao';
 import type { ConceitoCliente, DadosPesquisa } from '@/lib/dados-cliente';
+import { criarIndice } from '@/lib/pesquisa';
 
 /** Dados para a pesquisa e as pré-visualizações, gerados no build. */
 export const GET: APIRoute = async () => {
@@ -21,5 +22,6 @@ export const GET: APIRoute = async () => {
       }),
     ),
   };
+  dados.indice = criarIndice(dados.conceitos).toJSON();
   return new Response(JSON.stringify(dados), { headers: { 'Content-Type': 'application/json; charset=utf-8' } });
 };

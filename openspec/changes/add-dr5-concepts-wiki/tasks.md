@@ -42,9 +42,9 @@
 
 ## 7. Search
 
-- [ ] 7.1 Generate the `search.json` endpoint (fields per concept plus the serialised MiniSearch index with the D4 configuration); add Vitest ranking tests on the real index: `Af` → `Afastamento` first, `Ai` → both concepts above text matches, `recuo` → `Recuo` first, `area implantacao`, `afast` and `fachda`
-- [ ] 7.2 Build the search dialog (CommandDialog; `/` outside text fields, `Ctrl/⌘+K`, header button; loading while idle; result rows with matched-field label and highlighted snippet; Anexo filter; empty state with recent visits kept safely in localStorage; `Sem resultados para «…»`); verify with Playwright: Ctrl+K, type `recuo`, arrow, Enter opens `Recuo`; `/` typed in an input does not open search; `xyzzy` shows the no-results message; no network requests while typing
-- [ ] 7.3 Wire the home page's large search field to the same dialog and engine; verify with Playwright that typing on the home page shows results
+- [x] 7.1 Generate the `search.json` endpoint (fields per concept plus the serialised MiniSearch index with the D4 configuration); add Vitest ranking tests on the real index: `Af` → `Afastamento` first, `Ai` → both concepts above text matches, `recuo` → `Recuo` first, `area implantacao`, `afast` and `fachda`
+- [x] 7.2 Build the search dialog (CommandDialog; `/` outside text fields, `Ctrl/⌘+K`, header button; loading while idle; result rows with matched-field label and highlighted snippet; Anexo filter; empty state with recent visits kept safely in localStorage; `Sem resultados para «…»`); verify with Playwright: Ctrl+K, type `recuo`, arrow, Enter opens `Recuo`; `/` typed in an input does not open search; `xyzzy` shows the no-results message; no network requests while typing
+- [x] 7.3 Wire the home page's large search field to the same dialog and engine; verify with Playwright that typing on the home page shows results
 
 ## 8. Graphs
 

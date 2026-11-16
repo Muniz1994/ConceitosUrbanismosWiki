@@ -69,3 +69,14 @@ const anexos = (['I', 'II'] as const).map((anexo) => ({
     </div>
   </div>
 </Base>
+
+<script>
+  // O campo grande da página inicial abre o diálogo de pesquisa com o texto já escrito.
+  // Envia sempre o texto completo: enquanto o diálogo não recebe o foco, as teclas
+  // continuam a chegar a este campo; depois, seguem para o campo do diálogo.
+  const campo = document.querySelector<HTMLInputElement>('#pesquisa-inicio');
+  campo?.addEventListener('input', () => {
+    if (!campo.value) return;
+    window.dispatchEvent(new CustomEvent('pesquisa:abrir', { detail: { consulta: campo.value } }));
+  });
+</script>
