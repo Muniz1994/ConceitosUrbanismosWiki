@@ -4,21 +4,23 @@
  */
 import { getCollection } from 'astro:content';
 import path from 'node:path';
-import { construirConceitos, type Conceito } from './conteudo';
+import { construirConceitos, validarFiguras, type Conceito } from './conteudo';
 import { construirGrafo, type Grafo } from './grafo';
 
 let cache: Promise<Conceito[]> | undefined;
 
 export function carregarConceitos(): Promise<Conceito[]> {
   cache ??= (async () => {
-    const entradas = await getCollection('conceitos');
-    return construirConceitos(
+    const [entradas, figuras] = await Promise.all([getCollection('conceitos'), getCollection('figuras')]);
+    const conceitos = construirConceitos(
       entradas.map((e) => ({
         ficheiro: e.filePath ? path.normalize(e.filePath) : e.id,
         dados: e.data,
         corpo: e.body,
       })),
     );
+    validarFiguras(conceitos, figuras.map((f) => f.id));
+    return conceitos;
   })();
   return cache;
 }

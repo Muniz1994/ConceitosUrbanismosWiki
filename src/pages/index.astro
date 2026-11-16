@@ -1,16 +1,71 @@
 ---
-import '@/styles/global.css';
+import Base from '@/layouts/Base.astro';
+import { t } from '@/i18n/pt-PT';
 import { carregarGrafo } from '@/lib/colecao';
+import { FONTE } from '@/lib/fonte';
+import { url } from '@/lib/url';
+import { ArrowRight, Network, Search } from 'lucide-react';
+
 const { conceitos } = await carregarGrafo();
+const anexos = (['I', 'II'] as const).map((anexo) => ({
+  anexo,
+  titulo: t.anexo[anexo],
+  descricao: anexo === 'I' ? t.anexo.descricaoI : t.anexo.descricaoII,
+  total: conceitos.filter((c) => c.anexo === anexo).length,
+}));
 ---
-<html lang="pt-PT">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Conceitos DR 5/2019</title>
-  </head>
-  <body>
-    <h1 class="text-2xl font-semibold">Conceitos DR 5/2019</h1>
-    <p>{conceitos.length} conceitos</p>
-  </body>
-</html>
+<Base seccao="inicio">
+  <div class="mx-auto max-w-3xl">
+    <p class="mb-3 text-sm text-muted-foreground">{FONTE.titulo}, de {FONTE.data}</p>
+    <h1 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{t.inicio.titulo}</h1>
+    <p class="mt-4 text-lg text-pretty text-muted-foreground">{t.inicio.introducao}</p>
+
+    <form role="search" class="mt-8" data-pesquisa-inicio onsubmit="return false">
+      <label for="pesquisa-inicio" class="sr-only">{t.pesquisa.titulo}</label>
+      <div class="relative">
+        <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <input
+          id="pesquisa-inicio"
+          type="search"
+          autocomplete="off"
+          placeholder={t.pesquisa.placeholder}
+          class="h-14 w-full rounded-xl border bg-background pr-4 pl-12 text-base shadow-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+        />
+      </div>
+      <p class="mt-2 text-sm text-muted-foreground">{t.pesquisa.dica}</p>
+    </form>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2">
+      {
+        anexos.map((a) => (
+          <a
+            href={`${url('indice/')}?anexo=${a.anexo}`}
+            class="group rounded-xl border bg-card p-5 transition-colors hover:bg-accent"
+            data-contagem-anexo={a.anexo}
+          >
+            <div class="flex items-center gap-2 text-sm font-medium">
+              <span class:list={['size-2.5 rounded-full', a.anexo === 'I' ? 'bg-anexo-i' : 'bg-anexo-ii']} aria-hidden="true" />
+              {a.titulo}
+            </div>
+            <p class="mt-2 text-3xl font-semibold tabular-nums">
+              {a.total}
+              <span class="text-base font-normal text-muted-foreground"> conceitos</span>
+            </p>
+            <p class="mt-2 text-sm text-muted-foreground">{a.descricao}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a href={url('indice/')} class="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        {t.inicio.explorarIndice}
+        <ArrowRight className="size-4" aria-hidden="true" />
+      </a>
+      <a href={url('grafo/')} class="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium hover:bg-accent">
+        <Network className="size-4" aria-hidden="true" />
+        {t.inicio.explorarGrafo}
+      </a>
+    </div>
+  </div>
+</Base>

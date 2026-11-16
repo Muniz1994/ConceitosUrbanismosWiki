@@ -18,13 +18,13 @@
 - [x] 3.1 Write `scripts/importar-csv.ts` (`npm run importar`) per D8, with the clean-up rules (alias table, drop `Zona`, move `Dhab`/`D`, report the `ơ` glyph), the refuse-to-overwrite guard and `--force`; add Vitest tests on fixture rows covering note splitting, comma-joined references, the alias mapping and the guard
 - [x] 3.2 Write `scripts/extrair_figuras.py` (PyMuPDF, run with `python -I`) to crop figures 1a, 1b, 2, 3a, 3b, 4a and 4b from PDF pages 81–84 at 300 dpi into `src/assets/figuras/`; fill in `figuras.yaml` with the captions, alternative text in pt-PT and DR pages; verify by inspecting each PNG once
 - [x] 3.3 Run the import; check the report (8 aliases added, `Zona` dropped, 2 fields moved), that 101 files were created (73 Anexo I, 28 Anexo II) and that figure fields are seeded per D7 (including `Polígono de implantação`, `Cota de soleira` and `Elevação da soleira` from captions); check `ơ` against the PDF; commit the generated content
-- [ ] 3.4 Verify that the full build passes on the imported content, and that the resolved graph has 177 explicit links and 12 isolated concepts (a Vitest test over the real collection)
+- [x] 3.4 Verify that the full build passes on the imported content, and that the resolved graph has 177 explicit links and 12 isolated concepts (a Vitest test over the real collection)
 
 ## 4. Site shell
 
-- [ ] 4.1 Create `src/i18n/pt-PT.ts` with all interface strings and a `url()` base-path helper; add a Vitest test that `url('/conceitos/recuo/')` includes the base path
-- [ ] 4.2 Build the base layout: `lang="pt-PT"`, skip link `Saltar para o conteúdo`, header (site name, search button, `Índice`/`Grafo`/`Sobre`, theme switch), responsive mobile menu (Sheet), and a light/dark/system theme script inline in `<head>` so there is no flash; verify with Playwright: skip link focus, theme persists across navigation with no flash, no horizontal scroll at 360 px
-- [ ] 4.3 Build the home page (source, large search field, annex counts from the collection, links to the index and graph), the `Sobre` page (citation, official DRE link, the statement that the official text prevails, explanation of the three kinds of content) and the pt-PT 404 page; verify the counts read 73 and 28, and a Playwright check of `/conceitos/nao-existe/`
+- [x] 4.1 Create `src/i18n/pt-PT.ts` with all interface strings and a `url()` base-path helper; add a Vitest test that `url('/conceitos/recuo/')` includes the base path
+- [x] 4.2 Build the base layout: `lang="pt-PT"`, skip link `Saltar para o conteúdo`, header (site name, search button, `Índice`/`Grafo`/`Sobre`, theme switch), responsive mobile menu (Sheet), and a light/dark/system theme script inline in `<head>` so there is no flash; verify with Playwright: skip link focus, theme persists across navigation with no flash, no horizontal scroll at 360 px
+- [x] 4.3 Build the home page (source, large search field, annex counts from the collection, links to the index and graph), the `Sobre` page (citation, official DRE link, the statement that the official text prevails, explanation of the three kinds of content) and the pt-PT 404 page; verify the counts read 73 and 28, and a Playwright check of `/conceitos/nao-existe/`
 
 ## 5. Concept pages and browsing
 

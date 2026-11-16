@@ -37,3 +37,11 @@ describe('construirConceitos', () => {
     );
   });
 });
+
+describe('validarFiguras', () => {
+  it('falha com figura inexistente, nomeando o ficheiro e a figura', async () => {
+    const { validarFiguras } = await import('@/lib/conteudo');
+    const c = construirConceitos([{ ...entrada('Recuo.md', 'Recuo', 'I-57'), dados: { ...entrada('Recuo.md', 'Recuo', 'I-57').dados, figuras: ['figura-9'] } }]);
+    expect(() => validarFiguras(c, ['figura-1a'])).toThrow('Figura inexistente «figura-9» em Recuo.md (campo figuras)');
+  });
+});

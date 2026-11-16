@@ -1,0 +1,127 @@
+---
+import '@/styles/global.css';
+import AlternarTema from '@/components/AlternarTema';
+import BarraLateral from '@/components/BarraLateral.astro';
+import MenuMovel from '@/components/MenuMovel';
+import { t } from '@/i18n/pt-PT';
+import { carregarGrafo } from '@/lib/colecao';
+import { url, urlConceito } from '@/lib/url';
+import { Search } from 'lucide-react';
+
+export type Seccao = 'inicio' | 'indice' | 'grafo' | 'sobre' | 'conceito' | 'outra';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+  seccao: Seccao;
+  slugAtual?: string;
+  /** Mostra a lista de conceitos ao lado do conteúdo em ecrãs largos. */
+  barraLateral?: boolean;
+}
+
+const { titulo, descricao = t.site.descricao, seccao, slugAtual, barraLateral = false } = Astro.props;
+const { conceitos } = await carregarGrafo();
+const tituloPagina = titulo ? `${titulo} · ${t.site.nome}` : t.site.nome;
+
+const ligacoes = [
+  { href: url('indice/'), rotulo: t.nav.indice, atual: seccao === 'indice' },
+  { href: url('grafo/'), rotulo: t.nav.grafo, atual: seccao === 'grafo' },
+  { href: url('sobre/'), rotulo: t.nav.sobre, atual: seccao === 'sobre' },
+];
+const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
+  anexo,
+  titulo: t.anexo[anexo],
+  itens: conceitos
+    .filter((c) => c.anexo === anexo)
+    .map((c) => ({ slug: c.slug, conceito: c.conceito, ficha: c.ficha, href: urlConceito(c.slug) })),
+}));
+---
+<!doctype html>
+<html lang="pt-PT">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloPagina}</title>
+    <meta name="description" content={descricao} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <meta property="og:title" content={tituloPagina} />
+    <meta property="og:description" content={descricao} />
+    <meta property="og:locale" content="pt_PT" />
+    <meta name="color-scheme" content="light dark" />
+    <!-- Aplica o tema antes da primeira pintura, para não haver clarão do tema errado. -->
+    <script is:inline>
+      (() => {
+        let tema = 'sistema';
+        try {
+          tema = localStorage.getItem('tema') || 'sistema';
+        } catch {}
+        const escuro =
+          tema === 'escuro' || (tema === 'sistema' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', escuro);
+        document.documentElement.dataset.tema = tema;
+      })();
+    </script>
+  </head>
+  <body class="min-h-dvh antialiased">
+    <a
+      href="#conteudo"
+      class="sr-only z-50 rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      {t.nav.saltar}
+    </a>
+
+    <header class="sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      <div class="mx-auto flex h-14 max-w-screen-2xl items-center gap-2 px-3 sm:px-4">
+        <MenuMovel client:idle ligacoes={ligacoes} anexos={anexosMenu} slugAtual={slugAtual} />
+        <a href={url('')} class="mr-2 flex shrink-0 items-center gap-2 font-semibold tracking-tight">
+          <span class="grid size-7 place-items-center rounded-md bg-primary text-xs text-primary-foreground" aria-hidden="true">5</span>
+          <span class="hidden min-[400px]:inline">{t.site.nome}</span>
+        </a>
+        <nav aria-label={t.nav.principal} class="hidden items-center gap-1 lg:flex">
+          {
+            ligacoes.map((l) => (
+              <a
+                href={l.href}
+                aria-current={l.atual ? 'page' : undefined}
+                class:list={[
+                  'rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground',
+                  l.atual && 'font-medium text-foreground',
+                ]}
+              >
+                {l.rotulo}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="ml-auto flex min-w-0 items-center gap-1">
+          <button
+            type="button"
+            data-abrir-pesquisa
+            aria-label={t.pesquisa.abrir}
+            aria-keyshortcuts="/ Control+K Meta+K"
+            class="flex h-9 min-w-0 items-center gap-2 rounded-md border bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:w-64"
+          >
+            <Search className="size-4 shrink-0" aria-hidden="true" />
+            <span class="hidden truncate sm:inline">{t.pesquisa.placeholder}</span>
+            <kbd class="ml-auto hidden rounded border bg-background px-1.5 font-mono text-[10px] sm:inline">Ctrl K</kbd>
+          </button>
+          <AlternarTema client:load />
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto flex max-w-screen-2xl">
+      {barraLateral && <BarraLateral conceitos={conceitos} slugAtual={slugAtual} />}
+      <main id="conteudo" tabindex="-1" class="min-w-0 flex-1 px-4 py-8 outline-none sm:px-6 lg:px-10">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="border-t">
+      <div class="mx-auto max-w-screen-2xl space-y-1 px-4 py-6 text-xs text-muted-foreground sm:px-6">
+        <p>{t.rodape.aviso}</p>
+        <p>{t.site.fonte}.</p>
+      </div>
+    </footer>
+  </body>
+</html>

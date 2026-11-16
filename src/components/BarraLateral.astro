@@ -1,0 +1,60 @@
+---
+/** Lista de conceitos por anexo (ecrãs largos). Em ecrãs estreitos, o mesmo conteúdo está no MenuMovel. */
+import { t } from '@/i18n/pt-PT';
+import type { Conceito } from '@/lib/conteudo';
+import { urlConceito } from '@/lib/url';
+
+interface Props {
+  conceitos: Conceito[];
+  slugAtual?: string;
+}
+const { conceitos, slugAtual } = Astro.props;
+const grupos = (['I', 'II'] as const).map((anexo) => ({
+  anexo,
+  titulo: t.anexo[anexo],
+  itens: conceitos.filter((c) => c.anexo === anexo),
+}));
+---
+<aside
+  class="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-72 shrink-0 overflow-y-auto border-r py-6 pr-3 pl-4 lg:block"
+  data-barra-lateral
+>
+  <nav aria-label={t.nav.conceitos}>
+    {
+      grupos.map((g) => (
+        <section class="mb-6">
+          <h2 class="flex items-center gap-2 px-2 pb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            <span class:list={['size-2 rounded-full', g.anexo === 'I' ? 'bg-anexo-i' : 'bg-anexo-ii']} aria-hidden="true" />
+            {g.titulo}
+          </h2>
+          <ul class="space-y-0.5">
+            {g.itens.map((c) => (
+              <li>
+                <a
+                  href={urlConceito(c.slug)}
+                  aria-current={c.slug === slugAtual ? 'page' : undefined}
+                  data-conceito={c.slug}
+                  class:list={[
+                    'flex items-baseline gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
+                    c.slug === slugAtual && 'bg-accent font-medium text-foreground',
+                  ]}
+                >
+                  <span class="w-9 shrink-0 text-xs tabular-nums opacity-60">{c.ficha}</span>
+                  <span>{c.conceito}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </nav>
+</aside>
+<script>
+  // Mostra o conceito atual sem deslocar a página.
+  const barra = document.querySelector<HTMLElement>('[data-barra-lateral]');
+  const atual = barra?.querySelector<HTMLElement>('[aria-current="page"]');
+  if (barra && atual) {
+    barra.scrollTop = atual.offsetTop - barra.clientHeight / 2;
+  }
+</script>

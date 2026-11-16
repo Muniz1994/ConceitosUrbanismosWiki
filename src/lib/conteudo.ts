@@ -87,3 +87,12 @@ export function construirConceitos(entradas: EntradaBruta[]): Conceito[] {
 export function compararFichas(a: Pick<Conceito, 'anexo' | 'numero'>, b: Pick<Conceito, 'anexo' | 'numero'>): number {
   return a.anexo === b.anexo ? a.numero - b.numero : a.anexo === 'I' ? -1 : 1;
 }
+
+/** Falha se algum conceito referir uma figura inexistente. */
+export function validarFiguras(conceitos: Conceito[], idsFiguras: Iterable<string>): void {
+  const existentes = new Set(idsFiguras);
+  const erros = conceitos.flatMap((c) =>
+    c.figuras.filter((f) => !existentes.has(f)).map((f) => `Figura inexistente «${f}» em ${c.ficheiro} (campo figuras)`),
+  );
+  if (erros.length) throw new ErroConteudo(erros.join('\n'));
+}
