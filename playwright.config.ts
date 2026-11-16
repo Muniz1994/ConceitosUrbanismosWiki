@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 // Os testes correm contra o build de produção servido por `astro preview`,
 // com o mesmo caminho base usado no GitHub Pages. Correr `npm run build` antes.
 const PORT = 4322;
-export const BASE = '/ConceitosUrbanismosWiki/';
+export const BASE = `/${(process.env.BASE_PATH || '/ConceitosUrbanismosWiki').replace(/^\/+|\/+$/g, '')}/`;
 
 export default defineConfig({
   testDir: 'tests/e2e',

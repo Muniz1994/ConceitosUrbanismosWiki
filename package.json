@@ -17,7 +17,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:validacao": "node scripts/testar-validacao.mjs",
-    "importar": "tsx scripts/importar-csv.ts"
+    "importar": "tsx scripts/importar-csv.ts",
+    "verificar-ligacoes": "node scripts/verificar-ligacoes.mjs",
+    "ci": "node scripts/ci.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.1",

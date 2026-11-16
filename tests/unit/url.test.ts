@@ -22,6 +22,7 @@ describe('url', () => {
     expect(urlEditar('src\\content\\conceitos\\Área de solo.md', 'u/r')).toBe(
       'https://github.com/u/r/edit/main/src/content/conceitos/%C3%81rea%20de%20solo.md',
     );
-    expect(urlEditar('x.md', undefined)).toBeUndefined();
+    vi.stubEnv('PUBLIC_REPOSITORIO_GITHUB', '');
+    expect(urlEditar('x.md')).toBeUndefined();
   });
 });

@@ -12,7 +12,8 @@ process.env.PUBLIC_REPOSITORIO_GITHUB ??= process.env.GITHUB_REPOSITORY;
 
 export default defineConfig({
   site,
-  base: '/ConceitosUrbanismosWiki',
+  // Em GitHub Actions, BASE_PATH vem de actions/configure-pages (o nome do repositório).
+  base: process.env.BASE_PATH || '/ConceitosUrbanismosWiki',
   trailingSlash: 'always',
   integrations: [react()],
   vite: {
