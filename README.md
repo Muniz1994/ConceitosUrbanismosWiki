@@ -97,7 +97,7 @@ Já foram executados, e o resultado está no repositório. Ficam aqui para refer
 2. No GitHub, abra **Settings → Pages → Build and deployment → Source** e escolha **GitHub Actions**.
 3. Faça `git push -u origin main`.
 
-O workflow `.github/workflows/publicar.yml` corre `npm run ci` e, só se tudo passar, publica o site em `https://<utilizador>.github.io/ConceitosUrbanismosWiki/`. Se algum passo falhar, o site publicado fica como estava.
+O workflow `.github/workflows/deploy.yml` corre `npm run ci` e, só se tudo passar, publica o site em `https://<utilizador>.github.io/ConceitosUrbanismosWiki/`. Se algum passo falhar, o site publicado fica como estava.
 
 O caminho base vem do nome do repositório, através de `actions/configure-pages`. Localmente, a predefinição é `/ConceitosUrbanismosWiki`, e pode ser alterada com a variável `BASE_PATH`.
 
