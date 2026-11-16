@@ -4,12 +4,14 @@ import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { ArrowLeft, ArrowRight, Pencil } from 'lucide-react';
 import Figura from '@/components/conceito/Figura';
+import Ligacoes from '@/components/conceito/Ligacoes.astro';
 import TextoOficial from '@/components/conceito/TextoOficial.astro';
 import { Badge } from '@/components/ui/badge';
 import Base from '@/layouts/Base.astro';
 import { t } from '@/i18n/pt-PT';
 import { carregarGrafo } from '@/lib/colecao';
 import { ligarWikilinksHtml } from '@/lib/comentario';
+import { ligacoesNoTexto } from '@/lib/grafo';
 import type { Conceito } from '@/lib/conteudo';
 import { formatarUnidades } from '@/lib/texto';
 import { urlConceito, urlEditar } from '@/lib/url';
@@ -57,6 +59,7 @@ const figuras = await Promise.all(
 
 const comentarioHtml = c.comentarioHtml ? ligarWikilinksHtml(c.comentarioHtml, grafo.indice, urlConceito) : '';
 const editar = urlEditar(c.ficheiro);
+const noTexto = ligacoesNoTexto(grafo, c.slug);
 ---
 <Base seccao="conceito" titulo={c.conceito} descricao={c.definicao} slugAtual={c.slug} barraLateral>
   <article class="mx-auto max-w-3xl" data-pagina-conceito={c.slug}>
@@ -91,7 +94,7 @@ const editar = urlEditar(c.ficheiro);
         {t.conceito.definicao}
       </h2>
       <blockquote class="rounded-r-xl border-l-4 border-primary bg-muted/50 px-5 py-4 text-lg leading-relaxed text-pretty" data-definicao>
-        <TextoOficial texto={c.definicao} figuras={c.figuras} />
+        <TextoOficial texto={c.definicao} figuras={c.figuras} mencoes={noTexto.definicao} />
       </blockquote>
     </section>
 
@@ -102,9 +105,9 @@ const editar = urlEditar(c.ficheiro);
             {t.conceito.notas}
           </h2>
           <ul class="space-y-3 leading-relaxed" data-notas>
-            {c.notas.map((nota) => (
+            {c.notas.map((nota, i) => (
               <li class="relative pl-5 text-pretty before:absolute before:top-[0.7em] before:left-1 before:size-1.5 before:rounded-full before:bg-muted-foreground/60">
-                <TextoOficial texto={nota} figuras={c.figuras} />
+                <TextoOficial texto={nota} figuras={c.figuras} mencoes={noTexto.notas[i]} />
               </li>
             ))}
           </ul>
@@ -137,7 +140,7 @@ const editar = urlEditar(c.ficheiro);
       )
     }
 
-    <slot name="ligacoes" />
+    <Ligacoes grafo={grafo} slug={c.slug} />
 
     <nav class="mt-12 grid gap-3 border-t pt-6 sm:grid-cols-2" aria-label={`${t.conceito.anterior} / ${t.conceito.seguinte}`}>
       {

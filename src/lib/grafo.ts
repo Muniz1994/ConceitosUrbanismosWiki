@@ -3,6 +3,8 @@
  * Todas as páginas, a pesquisa e os grafos leem daqui, para que as vistas coincidam.
  */
 import { ErroConteudo, type Conceito } from './conteudo';
+import { detetarOcorrencias, prepararAlvos, primeiraDeCada } from './mencoes';
+import type { Intervalo } from './segmentos';
 import { compararPt, desembrulharWikilink, extrairWikilinks, normalizar } from './texto';
 
 export type IndiceNomes = Map<string, Conceito[]>;
@@ -47,6 +49,12 @@ export interface Grafo {
   ligacoesComentario: Map<string, string[]>;
   /** Inverso de todas as ligações explícitas, por ordem alfabética. */
   referidoPor: Map<string, string[]>;
+  /** Todas as ocorrências de nomes de outros conceitos no texto oficial, por secção. */
+  ocorrencias: Map<string, { definicao: Intervalo[]; notas: Intervalo[][] }>;
+  /** Menções derivadas (exclui os alvos do «ver também» do próprio conceito), por ordem alfabética. */
+  menciona: Map<string, string[]>;
+  /** Inverso de `menciona`, por ordem alfabética. */
+  mencionadoEm: Map<string, string[]>;
 }
 
 const unicos = (lista: string[]) => [...new Set(lista)];
@@ -90,7 +98,27 @@ export function construirGrafo(conceitos: Conceito[]): Grafo {
   const nomeDe = (slug: string) => porSlug.get(slug)!.conceito;
   for (const lista of referidoPor.values()) lista.sort((a, b) => compararPt(nomeDe(a), nomeDe(b)));
 
-  return { conceitos, porSlug, indice, verTambem, ligacoesComentario, referidoPor };
+  // Menções derivadas do texto oficial (definição e notas). As abreviaturas não contam.
+  const alvos = prepararAlvos(conceitos.flatMap((c) => [c.conceito, ...c.aliases].map((nome) => ({ nome, slug: c.slug }))));
+  const ocorrencias = new Map<string, { definicao: Intervalo[]; notas: Intervalo[][] }>();
+  const menciona = new Map<string, string[]>();
+  const mencionadoEm = new Map<string, string[]>(conceitos.map((c) => [c.slug, []]));
+  for (const c of conceitos) {
+    const seccoes = {
+      definicao: detetarOcorrencias(c.definicao, alvos, c.slug),
+      notas: c.notas.map((n) => detetarOcorrencias(n, alvos, c.slug)),
+    };
+    ocorrencias.set(c.slug, seccoes);
+    const oficiais = new Set(verTambem.get(c.slug));
+    const mencionados = unicos([...seccoes.definicao, ...seccoes.notas.flat()].map((o) => o.slug)).filter(
+      (s) => !oficiais.has(s),
+    );
+    menciona.set(c.slug, mencionados.sort((a, b) => compararPt(nomeDe(a), nomeDe(b))));
+    for (const alvo of mencionados) mencionadoEm.get(alvo)!.push(c.slug);
+  }
+  for (const lista of mencionadoEm.values()) lista.sort((a, b) => compararPt(nomeDe(a), nomeDe(b)));
+
+  return { conceitos, porSlug, indice, verTambem, ligacoesComentario, referidoPor, ocorrencias, menciona, mencionadoEm };
 }
 
 /** Pares únicos (não dirigidos) de ligações explícitas. */
@@ -107,4 +135,17 @@ export function arestasExplicitas(grafo: Grafo): Array<[string, string]> {
     }
   }
   return arestas;
+}
+
+/**
+ * Intervalos a ligar no texto oficial de um conceito: a primeira ocorrência de cada conceito
+ * na definição, e a primeira ocorrência de cada conceito no conjunto das notas.
+ */
+export function ligacoesNoTexto(grafo: Grafo, slug: string): { definicao: Intervalo[]; notas: Intervalo[][] } {
+  const oc = grafo.ocorrencias.get(slug)!;
+  const vistosNotas = new Set<string>();
+  return {
+    definicao: primeiraDeCada(oc.definicao),
+    notas: oc.notas.map((lista) => lista.filter((o) => (vistosNotas.has(o.slug) ? false : (vistosNotas.add(o.slug), true)))),
+  };
 }

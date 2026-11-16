@@ -78,7 +78,7 @@ It throws descriptive errors for unresolved or ambiguous references, which fails
 3. Skip the concept itself and its "ver também" targets.
 4. Never match abbreviations.
 
-The same positions drive the inline links ("first occurrence per section"), using a rehype step over the rendered definition and notes. The step wraps text in links only; it never edits the text.
+The same positions drive the inline links ("first occurrence per section"). Because the definition and notes are plain header fields rather than Markdown, a small segmenter (`src/lib/segmentos.ts`) splits each text into plain-text, figure-link and concept-link segments instead of a rehype step. It wraps text in links only; it never edits the text, and a test checks this for all 101 concepts.
 
 - *Alternatives:* computing links in the browser, which is slower and duplicates logic. Plural/stem matching was rejected for now because it risks false positives; aliases cover the needed variants.
 

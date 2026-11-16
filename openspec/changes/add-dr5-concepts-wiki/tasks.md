@@ -35,10 +35,10 @@
 
 ## 6. Connections
 
-- [ ] 6.1 Implement mention detection in `src/lib/grafo.ts` per D3 (longest match first, whole words, aliases included, abbreviations excluded, self and ver-também pairs excluded), keeping positions in the original text; add Vitest tests for `altura da fachada` vs `Fachada`, the ver-também exclusion and word boundaries
-- [ ] 6.2 Render the `Ver também`, `Referido por`, `Menciona` and `Mencionado em` sections on concept pages (alphabetical where specified, hidden when empty); verify that `Afastamento` lists its four references, that `Recuo` shows `Afastamento` under `Referido por` and that `Edifício` shows `Afastamento` under `Mencionado em`
-- [ ] 6.3 Add the rehype step that links the first occurrence of each mentioned concept per section in the definition and notes without altering the text; verify with a Vitest snapshot that the text content before and after is identical, and that only the first `edifício` is linked
-- [ ] 6.4 Add hover previews (one HoverCard component for the whole page, driven by `data-conceito`, opening on hover and focus, disabled on `(hover: none)`); verify with Playwright: hovering `Recuo` on `Afastamento` shows `Anexo I · Ficha I-57` and `Re`, and on a touch device a tap goes straight to the page
+- [x] 6.1 Implement mention detection in `src/lib/grafo.ts` per D3 (longest match first, whole words, aliases included, abbreviations excluded, self and ver-também pairs excluded), keeping positions in the original text; add Vitest tests for `altura da fachada` vs `Fachada`, the ver-também exclusion and word boundaries
+- [x] 6.2 Render the `Ver também`, `Referido por`, `Menciona` and `Mencionado em` sections on concept pages (alphabetical where specified, hidden when empty); verify that `Afastamento` lists its four references, that `Recuo` shows `Afastamento` under `Referido por` and that `Edifício` shows `Afastamento` under `Mencionado em`
+- [x] 6.3 Add the rehype step that links the first occurrence of each mentioned concept per section in the definition and notes without altering the text; verify with a Vitest snapshot that the text content before and after is identical, and that only the first `edifício` is linked
+- [x] 6.4 Add hover previews (one HoverCard component for the whole page, driven by `data-conceito`, opening on hover and focus, disabled on `(hover: none)`); verify with Playwright: hovering `Recuo` on `Afastamento` shows `Anexo I · Ficha I-57` and `Re`, and on a touch device a tap goes straight to the page
 
 ## 7. Search
 

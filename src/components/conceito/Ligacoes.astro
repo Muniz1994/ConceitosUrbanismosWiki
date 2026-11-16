@@ -1,0 +1,68 @@
+---
+/** Secções de ligações de um conceito: oficiais/explícitas primeiro, derivadas à parte. */
+import { t } from '@/i18n/pt-PT';
+import type { Grafo } from '@/lib/grafo';
+import { urlConceito } from '@/lib/url';
+
+interface Props {
+  grafo: Grafo;
+  slug: string;
+}
+const { grafo, slug } = Astro.props;
+const conceitoDe = (s: string) => grafo.porSlug.get(s)!;
+
+const explicitas = [
+  { id: 'ver-tambem', titulo: t.ligacoes.verTambem, slugs: grafo.verTambem.get(slug)! },
+  { id: 'referido-por', titulo: t.ligacoes.referidoPor, slugs: grafo.referidoPor.get(slug)! },
+].filter((g) => g.slugs.length > 0);
+const derivadas = [
+  { id: 'menciona', titulo: t.ligacoes.menciona, slugs: grafo.menciona.get(slug)! },
+  { id: 'mencionado-em', titulo: t.ligacoes.mencionadoEm, slugs: grafo.mencionadoEm.get(slug)! },
+].filter((g) => g.slugs.length > 0);
+---
+{
+  (explicitas.length > 0 || derivadas.length > 0) && (
+    <section class="mt-12 space-y-6" aria-labelledby="ligacoes">
+      <h2 id="ligacoes" class="text-xl font-semibold">{t.ligacoes.titulo}</h2>
+      {explicitas.map((g) => (
+        <div data-grupo-ligacoes={g.id}>
+          <h3 class="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{g.titulo}</h3>
+          <ul class="flex flex-wrap gap-2">
+            {g.slugs.map((s) => (
+              <li>
+                <a
+                  href={urlConceito(s)}
+                  data-conceito={s}
+                  class="inline-flex items-center gap-1.5 rounded-full border bg-card px-3 py-1 text-sm font-medium transition-colors hover:bg-accent"
+                >
+                  <span class:list={['size-1.5 rounded-full', conceitoDe(s).anexo === 'I' ? 'bg-anexo-i' : 'bg-anexo-ii']} aria-hidden="true" />
+                  {conceitoDe(s).conceito}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      {derivadas.length > 0 && (
+        <div class="space-y-4 rounded-xl border border-dashed p-4" data-ligacoes-derivadas>
+          <p class="text-xs text-muted-foreground">{t.ligacoes.notaMencoes}</p>
+          {derivadas.map((g) => (
+            <div data-grupo-ligacoes={g.id}>
+              <h3 class="mb-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase">{g.titulo}</h3>
+              <ul class="flex flex-wrap gap-x-3 gap-y-1.5">
+                {g.slugs.map((s) => (
+                  <li>
+                    <a href={urlConceito(s)} data-conceito={s} class="text-sm text-muted-foreground underline decoration-dashed underline-offset-4 hover:text-foreground">
+                      {conceitoDe(s).conceito}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+      <slot />
+    </section>
+  )
+}
