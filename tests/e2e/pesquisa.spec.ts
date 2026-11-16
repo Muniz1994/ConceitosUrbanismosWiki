@@ -27,7 +27,7 @@ test.describe('pesquisa', () => {
 
     await page.goto('./');
     await pronta(page);
-    const campoInicio = page.locator('#pesquisa-inicio');
+    const campoInicio = page.locator('[data-campo-inicio]');
     // Um campo de texto qualquer: o «/» é escrito e não abre o diálogo.
     await page.evaluate(() => {
       const i = document.createElement('input');
@@ -96,10 +96,12 @@ test.describe('pesquisa', () => {
   test('o campo da página inicial mostra resultados ao escrever', async ({ page }) => {
     await page.goto('./');
     await pronta(page);
-    await page.locator('#pesquisa-inicio').pressSequentially('afast');
-    await expect(page.getByRole('dialog')).toBeVisible();
-    // O primeiro carácter abre o diálogo; o foco passa para o campo do diálogo e o resto segue para lá.
-    await expect(page.getByRole('dialog').getByPlaceholder('Pesquisar conceitos…')).toHaveValue('afast');
-    await expect(page.locator('[data-resultado="afastamento"]')).toBeVisible();
+    const campo = page.locator('[data-campo-inicio]');
+    await campo.pressSequentially('afast');
+    await expect(campo).toHaveValue('afast');
+    const resultados = page.locator('[data-pesquisa-inicio] [data-resultado]');
+    await expect(resultados.first()).toHaveAttribute('data-resultado', 'afastamento');
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(/conceitos\/afastamento\/$/);
   });
 });

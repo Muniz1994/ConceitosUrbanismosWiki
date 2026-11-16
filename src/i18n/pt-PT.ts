@@ -60,7 +60,7 @@ export const t = {
     explicitas: 'Ligações explícitas',
     notaMencoes: 'Derivadas do texto oficial: o nome do conceito aparece na definição ou nas notas.',
     semLigacoes: 'Este conceito não tem ligações a outros conceitos.',
-    grafoLocal: 'Conceitos ligados (até duas ligações de distância)',
+    grafoLocal: 'Conceitos ligados',
     listaNos: 'Conceitos neste grafo',
   },
   pesquisa: {

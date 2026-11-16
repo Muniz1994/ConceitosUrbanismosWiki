@@ -1,0 +1,244 @@
+---
+/**
+ * Grafo em SVG, já disposto no build. Funciona sem JavaScript (cada nó é uma ligação);
+ * o script acrescenta realce de vizinhos e, no grafo completo, zoom, deslocação e filtros.
+ */
+import { Minus, Plus, RotateCcw } from 'lucide-react';
+import { t } from '@/i18n/pt-PT';
+import type { Disposicao } from '@/lib/disposicao';
+import { compararPt } from '@/lib/texto';
+import { urlConceito } from '@/lib/url';
+
+interface Props {
+  disposicao: Disposicao;
+  variante: 'local' | 'completo';
+  rotulo: string;
+}
+const { disposicao, variante, rotulo } = Astro.props;
+const { nos, arestas, caixa } = disposicao;
+const local = variante === 'local';
+const pos = new Map(nos.map((n) => [n.slug, n]));
+
+// No grafo local, os vizinhos diretos mostram sempre o nome; os de segundo nível, ao passar o cursor.
+const foco = nos.find((n) => n.foco)?.slug;
+const diretos = new Set(
+  arestas.flatMap((e) => (e.a === foco ? [e.b] : e.b === foco ? [e.a] : [])),
+);
+const nomeSempreVisivel = (slug: string, grau: number) =>
+  local ? slug === foco || diretos.has(slug) || nos.length <= 14 : grau >= 5;
+const raio = (grau: number, emFoco?: boolean) => (emFoco ? 11 : local ? 6 + Math.min(grau, 8) * 0.4 : 4 + Math.min(grau, 12) * 0.55);
+const listaOrdenada = [...nos].sort((a, b) => compararPt(a.conceito, b.conceito));
+---
+<figure class:list={['grafo', local ? 'grafo-local' : 'grafo-completo']} data-grafo={variante}>
+  {
+    !local && (
+      <div class="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm" data-controlos-grafo>
+        <span class="font-medium">{t.grafo.mostrar}</span>
+        <label class="inline-flex cursor-pointer items-center gap-2">
+          <input type="checkbox" checked data-alternar-tipo="explicita" class="size-4 accent-primary" />
+          <svg width="22" height="8" aria-hidden="true"><line x1="0" y1="4" x2="22" y2="4" class="aresta-explicita" /></svg>
+          {t.ligacoes.explicitas}
+        </label>
+        <label class="inline-flex cursor-pointer items-center gap-2">
+          <input type="checkbox" checked data-alternar-tipo="mencao" class="size-4 accent-primary" />
+          <svg width="22" height="8" aria-hidden="true"><line x1="0" y1="4" x2="22" y2="4" class="aresta-mencao" /></svg>
+          {t.ligacoes.mencoes}
+        </label>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span class="size-2.5 rounded-full bg-anexo-i" aria-hidden="true" />{t.anexo.I}
+        </span>
+        <span class="inline-flex items-center gap-1.5 text-muted-foreground">
+          <span class="size-2.5 rounded-full bg-anexo-ii" aria-hidden="true" />{t.anexo.II}
+        </span>
+        <span class="ml-auto inline-flex gap-1">
+          <button type="button" data-zoom="mais" class="grid size-8 place-items-center rounded-md border hover:bg-accent" aria-label={t.grafo.zoomMais}><Plus className="size-4" aria-hidden="true" /></button>
+          <button type="button" data-zoom="menos" class="grid size-8 place-items-center rounded-md border hover:bg-accent" aria-label={t.grafo.zoomMenos}><Minus className="size-4" aria-hidden="true" /></button>
+          <button type="button" data-zoom="repor" class="grid size-8 place-items-center rounded-md border hover:bg-accent" aria-label={t.grafo.repor}><RotateCcw className="size-4" aria-hidden="true" /></button>
+        </span>
+      </div>
+    )
+  }
+  <div class:list={['overflow-hidden rounded-xl border bg-card', local ? '' : 'h-[70vh] min-h-96']}>
+    <svg
+      viewBox={caixa.join(' ')}
+      class:list={['block h-full w-full select-none', local ? 'max-h-[26rem]' : 'cursor-grab active:cursor-grabbing']}
+      role="group"
+      aria-label={rotulo}
+      data-svg-grafo
+    >
+      <g data-camada>
+        <g data-arestas>
+          {
+            arestas.map((e) => {
+              const a = pos.get(e.a)!;
+              const b = pos.get(e.b)!;
+              return <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} class={`aresta-${e.tipo}`} data-a={e.a} data-b={e.b} data-tipo={e.tipo} />;
+            })
+          }
+        </g>
+        <g data-nos>
+          {
+            // O conceito em foco é desenhado por último, por cima dos outros.
+            [...nos].sort((a, b) => Number(!!a.foco) - Number(!!b.foco)).map((n) => (
+              <a
+                href={urlConceito(n.slug)}
+                data-no={n.slug}
+                data-conceito={local ? n.slug : undefined}
+                aria-label={n.conceito}
+                class:list={['no', `no-anexo-${n.anexo === 'I' ? 'i' : 'ii'}`, n.foco && 'no-foco', nomeSempreVisivel(n.slug, n.grau) && 'com-nome']}
+              >
+                <circle cx={n.x} cy={n.y} r={raio(n.grau, n.foco)} />
+                <text x={n.x} y={n.y - raio(n.grau, n.foco) - 4} text-anchor="middle">{n.conceito}</text>
+              </a>
+            ))
+          }
+        </g>
+      </g>
+    </svg>
+  </div>
+  <details class="mt-2 text-sm">
+    <summary class="cursor-pointer text-muted-foreground hover:text-foreground">{t.ligacoes.listaNos} ({nos.length})</summary>
+    <ul class="mt-2 columns-1 gap-6 sm:columns-2 lg:columns-3">
+      {listaOrdenada.map((n) => <li><a href={urlConceito(n.slug)} class="hover:underline">{n.conceito}</a></li>)}
+    </ul>
+  </details>
+</figure>
+
+<style is:global>
+  .grafo .aresta-explicita {
+    stroke: var(--foreground);
+    stroke-opacity: 0.35;
+    stroke-width: 1.3;
+  }
+  .grafo .aresta-mencao,
+  [data-controlos-grafo] .aresta-mencao {
+    stroke: var(--muted-foreground);
+    stroke-opacity: 0.45;
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  [data-controlos-grafo] .aresta-explicita {
+    stroke: var(--foreground);
+    stroke-opacity: 0.6;
+    stroke-width: 1.5;
+  }
+  .grafo .no circle {
+    stroke: var(--background);
+    stroke-width: 1.5;
+    transition: r 120ms;
+  }
+  .grafo .no-anexo-i circle {
+    fill: var(--anexo-i);
+  }
+  .grafo .no-anexo-ii circle {
+    fill: var(--anexo-ii);
+  }
+  .grafo .no-foco circle {
+    stroke: var(--foreground);
+    stroke-width: 2.5;
+  }
+  .grafo .no text {
+    fill: var(--foreground);
+    font-size: 11px;
+    paint-order: stroke;
+    stroke: var(--card);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .grafo-completo .no text {
+    font-size: 10px;
+  }
+  .grafo .no.com-nome text,
+  .grafo .no:hover text,
+  .grafo .no:focus-visible text,
+  .grafo.aproximado .no text,
+  .grafo .no.realce text {
+    opacity: 1;
+  }
+  .grafo .no-foco text {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .grafo .no:focus-visible {
+    outline: none;
+  }
+  .grafo .no:focus-visible circle {
+    stroke: var(--ring);
+    stroke-width: 3;
+  }
+  .grafo.com-realce .no:not(.realce) {
+    opacity: 0.18;
+  }
+  .grafo.com-realce [data-arestas] line:not(.realce) {
+    opacity: 0.08;
+  }
+  .grafo.com-realce .no:not(.realce) text {
+    opacity: 0;
+  }
+  .grafo.sem-explicita [data-tipo='explicita'],
+  .grafo.sem-mencao [data-tipo='mencao'] {
+    display: none;
+  }
+</style>
+
+<script>
+  import { select } from 'd3-selection';
+  import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
+
+  for (const figura of document.querySelectorAll<HTMLElement>('[data-grafo]')) {
+    const svg = figura.querySelector<SVGSVGElement>('[data-svg-grafo]')!;
+    const linhas = [...svg.querySelectorAll<SVGLineElement>('[data-arestas] line')];
+    const nos = new Map([...svg.querySelectorAll<SVGAElement>('[data-no]')].map((n) => [n.dataset.no!, n]));
+
+    // Realce: o nó, os vizinhos diretos e as ligações entre eles (só as ligações visíveis contam).
+    const realcar = (slug: string | null) => {
+      for (const el of figura.querySelectorAll('.realce')) el.classList.remove('realce');
+      figura.classList.toggle('com-realce', !!slug);
+      if (!slug) return;
+      nos.get(slug)?.classList.add('realce');
+      for (const l of linhas) {
+        if (getComputedStyle(l).display === 'none') continue;
+        const { a, b } = l.dataset;
+        if (a === slug || b === slug) {
+          l.classList.add('realce');
+          nos.get(a === slug ? b! : a!)?.classList.add('realce');
+        }
+      }
+    };
+    for (const [slug, no] of nos) {
+      no.addEventListener('pointerenter', () => realcar(slug));
+      no.addEventListener('pointerleave', () => realcar(null));
+      no.addEventListener('focus', () => realcar(slug));
+      no.addEventListener('blur', () => realcar(null));
+    }
+
+    if (figura.dataset.grafo !== 'completo') continue;
+
+    // Filtros por tipo de ligação.
+    for (const caixa of figura.querySelectorAll<HTMLInputElement>('[data-alternar-tipo]')) {
+      caixa.addEventListener('change', () => figura.classList.toggle(`sem-${caixa.dataset.alternarTipo}`, !caixa.checked));
+    }
+
+    // Zoom e deslocação.
+    const camada = select(svg.querySelector<SVGGElement>('[data-camada]')!);
+    const comportamento: ZoomBehavior<SVGSVGElement, unknown> = zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 6])
+      .on('zoom', (e) => {
+        camada.attr('transform', e.transform.toString());
+        figura.classList.toggle('aproximado', e.transform.k >= 1.8);
+      });
+    const s = select(svg).call(comportamento);
+    const acoes: Record<string, () => void> = {
+      mais: () => comportamento.scaleBy(s, 1.5),
+      menos: () => comportamento.scaleBy(s, 1 / 1.5),
+      repor: () => comportamento.transform(s, zoomIdentity),
+    };
+    for (const b of figura.querySelectorAll<HTMLButtonElement>('[data-zoom]')) {
+      b.addEventListener('click', () => acoes[b.dataset.zoom!]?.());
+    }
+    figura.dataset.interativo = 'sim';
+  }
+</script>

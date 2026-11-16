@@ -4,7 +4,8 @@ import { t } from '@/i18n/pt-PT';
 import { carregarGrafo } from '@/lib/colecao';
 import { FONTE } from '@/lib/fonte';
 import { url } from '@/lib/url';
-import { ArrowRight, Network, Search } from 'lucide-react';
+import { ArrowRight, Network } from 'lucide-react';
+import PesquisaInicio from '@/components/PesquisaInicio';
 
 const { conceitos } = await carregarGrafo();
 const anexos = (['I', 'II'] as const).map((anexo) => ({
@@ -20,20 +21,10 @@ const anexos = (['I', 'II'] as const).map((anexo) => ({
     <h1 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{t.inicio.titulo}</h1>
     <p class="mt-4 text-lg text-pretty text-muted-foreground">{t.inicio.introducao}</p>
 
-    <form role="search" class="mt-8" data-pesquisa-inicio onsubmit="return false">
-      <label for="pesquisa-inicio" class="sr-only">{t.pesquisa.titulo}</label>
-      <div class="relative">
-        <Search className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-        <input
-          id="pesquisa-inicio"
-          type="search"
-          autocomplete="off"
-          placeholder={t.pesquisa.placeholder}
-          class="h-14 w-full rounded-xl border bg-background pr-4 pl-12 text-base shadow-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-        />
-      </div>
+    <div class="relative z-10 mt-8" role="search">
+      <PesquisaInicio client:load />
       <p class="mt-2 text-sm text-muted-foreground">{t.pesquisa.dica}</p>
-    </form>
+    </div>
 
     <div class="mt-10 grid gap-4 sm:grid-cols-2">
       {
@@ -69,14 +60,3 @@ const anexos = (['I', 'II'] as const).map((anexo) => ({
     </div>
   </div>
 </Base>
-
-<script>
-  // O campo grande da página inicial abre o diálogo de pesquisa com o texto já escrito.
-  // Envia sempre o texto completo: enquanto o diálogo não recebe o foco, as teclas
-  // continuam a chegar a este campo; depois, seguem para o campo do diálogo.
-  const campo = document.querySelector<HTMLInputElement>('#pesquisa-inicio');
-  campo?.addEventListener('input', () => {
-    if (!campo.value) return;
-    window.dispatchEvent(new CustomEvent('pesquisa:abrir', { detail: { consulta: campo.value } }));
-  });
-</script>

@@ -73,7 +73,7 @@ On devices with a pointer, resting on any link to a concept SHALL show a preview
 - **THEN** the `Recuo` page opens directly
 
 ### Requirement: Local graph on concept pages
-Each concept page SHALL show a small graph of the concept and its neighbours up to two links away. The concept itself SHALL be emphasised, explicit links and mentions SHALL be drawn differently, and selecting a node SHALL open that concept. A concept with no links SHALL show a short note instead of a graph.
+Each concept page SHALL show a small graph of the concept, all its direct neighbours (explicit links and mentions), and the concepts one further explicit link away. The concept itself SHALL be emphasised, explicit links and mentions SHALL be drawn differently, and selecting a node SHALL open that concept. A concept with no links SHALL show a short note instead of a graph.
 
 #### Scenario: Navigating from the local graph
 - **WHEN** a reader selects the `Fachada` node in `Afastamento`'s local graph

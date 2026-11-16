@@ -167,3 +167,13 @@ Rollback means reverting the commit on `main`; the workflow republishes the prev
 ## Open Questions
 
 - The GitHub username (for `site`) and the exact official DRE URL for the about page. Both are filled in during implementation and do not affect the design.
+
+## Implementation notes
+
+Changes made during implementation, with the same observable behaviour unless stated otherwise:
+
+- **D5:** graphology was not needed. `d3-force` alone runs with a seeded random source. Interactivity is a plain Astro `<script>` (d3-zoom and d3-selection) rather than a React component.
+- **Local graph scope:** direct neighbours include both link types, but the second step follows only explicit links. Following mentions pulled most of Anexo I into every local graph through hub concepts such as *Edifício*. The concept-connections spec was updated to match.
+- **Home search (task 7.3):** the large field on the home page uses the same engine and results list as the dialog, but shows results inline below the field. Handing focus over to the dialog while the user was typing lost keystrokes.
+- **Hover previews (D6):** these use a single Radix Popover anchored to the hovered link with `virtualRef`, styled like the shadcn HoverCard. HoverCard itself cannot be anchored to arbitrary elements.
+- **Data fix:** the abbreviation of *Inclinação da cobertura* is «α» in the decree's table (DR p. 11). The PDF's text layer and the CSV have «ơ» (U+01A1), and the import corrects it.

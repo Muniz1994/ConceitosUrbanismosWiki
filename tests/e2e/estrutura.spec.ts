@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { esperarHidratacao } from './apoio';
 
 test.describe('estrutura do site', () => {
   test('declara pt-PT e o primeiro Tab foca «Saltar para o conteúdo»', async ({ page }) => {
@@ -14,6 +15,7 @@ test.describe('estrutura do site', () => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto('./');
     const botao = page.locator('[data-tema-atual]');
+    await esperarHidratacao(page, '[data-tema-atual]');
     await expect(botao).toHaveAttribute('data-tema-atual', 'sistema');
     await botao.click(); // claro
     await botao.click(); // escuro

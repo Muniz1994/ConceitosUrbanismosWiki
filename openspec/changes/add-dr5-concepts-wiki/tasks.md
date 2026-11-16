@@ -48,9 +48,9 @@
 
 ## 8. Graphs
 
-- [ ] 8.1 Compute deterministic layouts at build time (graphology + d3-force with a seeded start) for the full graph and for each concept's 2-hop neighbourhood; add a Vitest test that two runs give identical positions
-- [ ] 8.2 Render the local graph SVG on concept pages (current node emphasised, explicit and mention links styled differently, nodes as links, a "no links" note for isolated concepts, plus a list of links for screen readers); verify with Playwright that the `Fachada` node on `Afastamento` opens `Fachada`, and that `RGB` shows the note
-- [ ] 8.3 Build the `Grafo` page (SVG coloured by annex through theme variables; a React component for zoom and pan, link-type toggles and neighbour highlighting on hover and focus); verify with Playwright that turning off `Menções` hides the dashed links, that hovering `Edificação` dims non-neighbours, and that with JavaScript disabled the page shows the laid-out graph with working links
+- [x] 8.1 Compute deterministic layouts at build time (graphology + d3-force with a seeded start) for the full graph and for each concept's 2-hop neighbourhood; add a Vitest test that two runs give identical positions
+- [x] 8.2 Render the local graph SVG on concept pages (current node emphasised, explicit and mention links styled differently, nodes as links, a "no links" note for isolated concepts, plus a list of links for screen readers); verify with Playwright that the `Fachada` node on `Afastamento` opens `Fachada`, and that `RGB` shows the note
+- [x] 8.3 Build the `Grafo` page (SVG coloured by annex through theme variables; a React component for zoom and pan, link-type toggles and neighbour highlighting on hover and focus); verify with Playwright that turning off `Menções` hides the dashed links, that hovering `Edificação` dims non-neighbours, and that with JavaScript disabled the page shows the laid-out graph with working links
 
 ## 9. Deployment and integration
 

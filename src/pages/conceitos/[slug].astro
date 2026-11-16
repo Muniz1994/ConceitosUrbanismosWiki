@@ -4,12 +4,13 @@ import { getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import { ArrowLeft, ArrowRight, Pencil } from 'lucide-react';
 import Figura from '@/components/conceito/Figura';
+import GrafoSvg from '@/components/GrafoSvg.astro';
 import Ligacoes from '@/components/conceito/Ligacoes.astro';
 import TextoOficial from '@/components/conceito/TextoOficial.astro';
 import { Badge } from '@/components/ui/badge';
 import Base from '@/layouts/Base.astro';
 import { t } from '@/i18n/pt-PT';
-import { carregarGrafo } from '@/lib/colecao';
+import { carregarGrafo, carregarGrafoLocal } from '@/lib/colecao';
 import { ligarWikilinksHtml } from '@/lib/comentario';
 import { ligacoesNoTexto } from '@/lib/grafo';
 import type { Conceito } from '@/lib/conteudo';
@@ -60,6 +61,7 @@ const figuras = await Promise.all(
 const comentarioHtml = c.comentarioHtml ? ligarWikilinksHtml(c.comentarioHtml, grafo.indice, urlConceito) : '';
 const editar = urlEditar(c.ficheiro);
 const noTexto = ligacoesNoTexto(grafo, c.slug);
+const grafoLocal = await carregarGrafoLocal(c.slug);
 ---
 <Base seccao="conceito" titulo={c.conceito} descricao={c.definicao} slugAtual={c.slug} barraLateral>
   <article class="mx-auto max-w-3xl" data-pagina-conceito={c.slug}>
@@ -141,6 +143,21 @@ const noTexto = ligacoesNoTexto(grafo, c.slug);
     }
 
     <Ligacoes grafo={grafo} slug={c.slug} />
+
+    <section class="mt-10" aria-labelledby="grafo-local" data-grafo-local>
+      <h2 id="grafo-local" class="mb-3 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        {t.ligacoes.grafoLocal}
+      </h2>
+      {
+        grafoLocal.nos.length > 1 ? (
+          <GrafoSvg disposicao={grafoLocal} variante="local" rotulo={`${t.ligacoes.grafoLocal}: ${c.conceito}`} />
+        ) : (
+          <p class="rounded-xl border border-dashed p-4 text-sm text-muted-foreground" data-sem-ligacoes>
+            {t.ligacoes.semLigacoes}
+          </p>
+        )
+      }
+    </section>
 
     <nav class="mt-12 grid gap-3 border-t pt-6 sm:grid-cols-2" aria-label={`${t.conceito.anterior} / ${t.conceito.seguinte}`}>
       {
