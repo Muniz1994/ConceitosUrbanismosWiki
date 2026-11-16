@@ -52,7 +52,7 @@ test.describe('estrutura do site', () => {
 
   test.describe('a 360 px de largura', () => {
     test.use({ viewport: { width: 360, height: 740 } });
-    for (const caminho of ['./', 'sobre/', 'conceitos/nao-existe/']) {
+    for (const caminho of ['./', 'sobre/', 'conceitos/nao-existe/', 'conceitos/afastamento/', 'grafo/', 'indice/']) {
       test(`${caminho} não tem deslocamento horizontal e mostra a pesquisa`, async ({ page }) => {
         await page.goto(caminho);
         const excesso = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);

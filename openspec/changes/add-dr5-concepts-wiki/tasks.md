@@ -56,8 +56,8 @@
 
 - [x] 9.1 Write `scripts/verificar-ligacoes.mjs`, which walks `dist/` and checks every internal `href`/`src` under the base path; verify that it passes on the real build and fails with page and address listed when a broken link is injected into a fixture
 - [ ] 9.2 Add `.github/workflows/deploy.yml` (on push to `main`: npm ci → test → build → link check → Playwright against `astro preview` → upload-pages-artifact; a separate deploy job that runs only if the build succeeds); validate the YAML locally, and verify that the steps run in order with `npm run ci` (a local script mirroring the workflow)
-- [ ] 9.3 Write `README.md` in pt-PT (how to edit a concept, add commentary and `[[...]]` links, `npm run dev`, `npm run preview` under the base path, the one-off scripts, deployment setup); verify by following the preview steps from a clean clone
-- [ ] 9.4 Final integration check: run `npm run ci` locally; confirm that `dist/` holds 101 concept pages and contains neither the CSV nor the PDF; run Lighthouse on a concept page and the graph page (accessibility ≥ 95, no horizontal scroll at 360 px)
+- [x] 9.3 Write `README.md` in pt-PT (how to edit a concept, add commentary and `[[...]]` links, `npm run dev`, `npm run preview` under the base path, the one-off scripts, deployment setup); verify by following the preview steps from a clean clone
+- [x] 9.4 Final integration check: run `npm run ci` locally; confirm that `dist/` holds 101 concept pages and contains neither the CSV nor the PDF; run Lighthouse on a concept page and the graph page (accessibility ≥ 95, no horizontal scroll at 360 px)
 
 ## Workflow follow-up
 
