@@ -29,6 +29,7 @@
 @theme inline {
     --color-anexo-i: var(--anexo-i);
     --color-anexo-ii: var(--anexo-ii);
+    --color-info: var(--info);
     --font-sans: var(--font-sans);
     --font-mono: var(--font-mono);
     --font-heading: var(--font-sans);
@@ -87,16 +88,21 @@
 /*
  * Cores dos anexos (grafo, etiquetas): do site, não da paleta.
  * :where() tem especificidade zero, para que uma paleta as possa substituir se precisar.
+ *
+ * --info: azul de informação (ícones informativos), igual em todas as paletas.
+ * Matiz 225, um pouco para o ciano, para se distinguir do azul do Anexo I (250).
  */
 :where(:root) {
     --anexo-i: oklch(0.52 0.13 250);
     --anexo-ii: oklch(0.6 0.15 50);
+    --info: oklch(0.55 0.13 225);
     --foco: var(--primary);
 }
 
 :where(.dark) {
     --anexo-i: oklch(0.74 0.11 250);
     --anexo-ii: oklch(0.78 0.13 65);
+    --info: oklch(0.78 0.11 225);
 }
 
 @layer base {

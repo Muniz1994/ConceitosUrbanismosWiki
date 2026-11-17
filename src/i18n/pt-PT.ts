@@ -112,6 +112,8 @@ export const t = {
     titulo: 'Conceitos técnicos do DR 5/2019',
     introducao:
       'Definições, notas complementares e ligações entre os conceitos técnicos fixados pelo Decreto Regulamentar n.º 5/2019 para o ordenamento do território, o urbanismo e a cartografia.',
+    /** Nome acessível do ícone que mostra a introdução em ecrãs estreitos (o estado aberto/fechado é anunciado à parte). */
+    mostrarIntroducao: 'Introdução',
     conceitos: (n: number) => `${n} conceitos`,
     explorarIndice: 'Ver o índice A–Z',
     explorarGrafo: 'Explorar o grafo',

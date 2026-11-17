@@ -24,6 +24,9 @@ const PARES: Par[] = ([
   ['anexo-ii/background', 'anexo-ii', 'background', 3],
   ['anexo-i/card', 'anexo-i', 'card', 3],
   ['anexo-ii/card', 'anexo-ii', 'card', 3],
+  // Ícones informativos (p. ex. a introdução dobrada da página inicial): azul do site, igual em todas as paletas.
+  ['info/background', 'info', 'background', 3],
+  ['info/card', 'info', 'card', 3],
 ] as const).map(([nome, a, b, minimo]) => ({ nome, a, b, minimo }));
 
 function resolver(id: (typeof IDS_PALETAS)[number], modo: Modo) {

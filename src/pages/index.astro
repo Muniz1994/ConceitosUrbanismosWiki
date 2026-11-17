@@ -4,7 +4,7 @@ import { t } from '@/i18n/pt-PT';
 import { carregarGrafo } from '@/lib/colecao';
 import { FONTE } from '@/lib/fonte';
 import { url } from '@/lib/url';
-import { ArrowRight, Network } from 'lucide-react';
+import { ArrowRight, Info, Network } from 'lucide-react';
 import PesquisaInicio from '@/components/PesquisaInicio';
 
 const { conceitos } = await carregarGrafo();
@@ -18,8 +18,24 @@ const anexos = (['I', 'II'] as const).map((anexo) => ({
 <Base seccao="inicio">
   <div class="mx-auto max-w-3xl">
     <p class="mb-3 text-sm text-muted-foreground">{FONTE.titulo}, de {FONTE.data}</p>
-    <h1 class="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">{t.inicio.titulo}</h1>
-    <p class="mt-4 text-lg text-pretty text-muted-foreground">{t.inicio.introducao}</p>
+    {/*
+      Introdução: em ecrãs estreitos (< 640 px) fica dobrada atrás de um ícone de informação no título
+      (<details> nativo: funciona sem JavaScript e anuncia aberto/fechado). Em ecrãs largos, mostra-se sempre.
+      Só uma das duas versões está visível de cada vez, por isso os leitores de ecrã leem o texto uma vez.
+    */}
+    <div class="relative">
+      <h1 class="pr-12 text-3xl font-semibold tracking-tight text-balance sm:pr-0 sm:text-4xl">{t.inicio.titulo}</h1>
+      <details class="sm:hidden" data-introducao-dobravel>
+        <summary
+          class="absolute top-0 right-0 grid size-10 cursor-pointer list-none place-items-center rounded-full text-info transition-colors hover:bg-accent [&::-webkit-details-marker]:hidden"
+        >
+          <Info className="size-6" aria-hidden="true" />
+          <span class="sr-only">{t.inicio.mostrarIntroducao}</span>
+        </summary>
+        <p class="mt-4 text-lg text-pretty text-muted-foreground">{t.inicio.introducao}</p>
+      </details>
+    </div>
+    <p class="mt-4 hidden text-lg text-pretty text-muted-foreground sm:block" data-introducao-larga>{t.inicio.introducao}</p>
 
     <div class="relative z-10 mt-8" role="search">
       <PesquisaInicio client:load />
