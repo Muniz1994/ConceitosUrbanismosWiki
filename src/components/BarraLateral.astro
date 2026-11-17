@@ -35,8 +35,8 @@ const grupos = (['I', 'II'] as const).map((anexo) => ({
                   aria-current={c.slug === slugAtual ? 'page' : undefined}
                   data-conceito={c.slug}
                   class:list={[
-                    'flex items-baseline gap-2 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
-                    c.slug === slugAtual && 'bg-accent font-medium text-foreground',
+                    'flex items-baseline gap-2 rounded-md px-2 py-1 text-sm transition-colors hover:bg-accent hover:text-foreground',
+                    c.slug === slugAtual ? 'bg-selecionado font-medium text-foreground' : 'text-muted-foreground',
                   ]}
                 >
                   <span class="w-9 shrink-0 text-xs tabular-nums opacity-60">{c.ficha}</span>

@@ -6,6 +6,7 @@ Wiki dos conceitos técnicos fixados pelo **Decreto Regulamentar n.º 5/2019, de
 - **Ligações**: as do decreto («Ver também»), as inversas («Referido por») e as derivadas do texto («Menciona» e «Mencionado em»).
 - **Pré-visualização** de qualquer conceito ao passar o cursor, grafo de vizinhos em cada página e grafo completo.
 - O texto oficial fica separado dos **comentários pessoais**.
+- **Aparência**: modo claro, escuro ou do sistema, e quatro paletas do [tweakcn](https://tweakcn.com): Soft Pop (predefinida), Vercel, Nature e Vintage Paper. A escolha fica guardada no dispositivo.
 
 Feito com [Astro](https://astro.build), [shadcn/ui](https://ui.shadcn.com) e [MiniSearch](https://lucaong.github.io/minisearch/), e publicado no GitHub Pages.
 
@@ -16,7 +17,8 @@ src/content/conceitos/   um ficheiro Markdown por conceito (fonte de verdade)
 src/content/figuras.yaml legendas e textos alternativos das figuras
 src/assets/figuras/      imagens das figuras (extraídas do PDF)
 src/pages/               páginas do site
-src/lib/                 lógica: ligações, menções, pesquisa, disposição dos grafos
+src/lib/                 lógica: ligações, menções, pesquisa, disposição dos grafos, aparência
+src/styles/paletas/      uma paleta do tweakcn por ficheiro
 fontes/                  CSV e PDF de origem (não são publicados)
 scripts/                 importação única, extração das figuras, verificações
 tests/                   testes unitários (Vitest) e no navegador (Playwright)
@@ -78,11 +80,25 @@ npm run preview    # http://localhost:4321/ConceitosUrbanismosWiki/
 
 | Comando | O que faz |
 |---|---|
-| `npm test` | Testes unitários: ligações, menções, pesquisa, importação, disposição dos grafos |
+| `npm test` | Testes unitários: ligações, menções, pesquisa, importação, disposição dos grafos, contraste das paletas |
 | `npm run test:validacao` | Confirma que conteúdo inválido faz falhar o build com mensagens claras |
 | `npm run verificar-ligacoes` | Verifica todas as ligações internas do site gerado em `dist/` |
 | `npm run test:e2e` | Testes no navegador sobre o build (correr `npm run build` antes; na primeira vez, `npx playwright install chromium`) |
 | `npm run ci` | Todos os passos acima, pela mesma ordem que no GitHub Actions |
+
+## Adicionar uma paleta
+
+As paletas vêm do [tweakcn](https://tweakcn.com/themes) e são copiadas sem alterações. A lista de temas está em `https://tweakcn.com/r/themes/registry.json`, e cada tema tem o seu ficheiro em `https://tweakcn.com/r/themes/<id>.json`.
+
+1. **Copie a paleta.** Crie `src/styles/paletas/<id>.css` com a mesma estrutura das outras:
+   - os valores de `cssVars.light` sob `[data-paleta='<id>']`;
+   - os valores de `cssVars.dark` sob `.dark[data-paleta='<id>'], .dark [data-paleta='<id>']`.
+
+   Copie as cores, `--radius` e as sombras (`--shadow-*`) tal como estão. Os tipos de letra vão no passo seguinte.
+2. **Tipos de letra.** Instale os pacotes do [Fontsource](https://fontsource.org) dos tipos de letra `font-sans` e `font-mono` da paleta, de preferência a versão `@fontsource-variable/…`. Importe-os em `src/styles/global.css`. No ficheiro da paleta, defina `--font-sans` e `--font-mono` com o nome que o Fontsource regista (p. ex. `'DM Sans Variable'`).
+3. **Registe a paleta.** Acrescente-a a `PALETAS` em `src/lib/aparencia.ts` e importe o ficheiro em `src/styles/global.css`. A paleta aparece no seletor «Aparência» automaticamente.
+4. **Verifique o contraste.** Corra `npm test`. O teste `contraste.test.ts` verifica cada paleta nos dois modos: texto, texto secundário, botões, estados de seleção, foco e cores dos anexos. Se falhar, a mensagem indica a paleta, o modo, o par de cores e a razão medida.
+5. **Se for preciso corrigir.** Acrescente ao fim do ficheiro da paleta um bloco «Correções» que substitua só os valores necessários. Ponha num comentário o motivo e a razão de contraste antes e depois. O ficheiro `vintage-paper.css` serve de exemplo.
 
 ## Scripts de uso único
 

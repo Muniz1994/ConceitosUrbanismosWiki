@@ -1,11 +1,12 @@
 ---
 import '@/styles/global.css';
-import AlternarTema from '@/components/AlternarTema';
+import Aparencia from '@/components/Aparencia';
 import BarraLateral from '@/components/BarraLateral.astro';
 import MenuMovel from '@/components/MenuMovel';
 import Pesquisa from '@/components/Pesquisa';
 import VistaPrevia from '@/components/VistaPrevia';
 import { t } from '@/i18n/pt-PT';
+import { IDS_PALETAS, PALETA_PREDEFINIDA } from '@/lib/aparencia';
 import { carregarGrafo } from '@/lib/colecao';
 import { url, urlConceito } from '@/lib/url';
 import { Search } from 'lucide-react';
@@ -39,7 +40,7 @@ const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
 }));
 ---
 <!doctype html>
-<html lang="pt-PT">
+<html lang="pt-PT" data-paleta={PALETA_PREDEFINIDA}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,17 +51,24 @@ const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
     <meta property="og:description" content={descricao} />
     <meta property="og:locale" content="pt_PT" />
     <meta name="color-scheme" content="light dark" />
-    <!-- Aplica o tema antes da primeira pintura, para não haver clarão do tema errado. -->
-    <script is:inline>
+    <!--
+      Aplica o modo e a paleta antes da primeira pintura, para não haver clarão do aspeto errado.
+      Sem JavaScript, fica a paleta predefinida (atributo acima) em modo claro.
+    -->
+    <script is:inline define:vars={{ paletas: IDS_PALETAS, paletaPredefinida: PALETA_PREDEFINIDA }}>
       (() => {
         let tema = 'sistema';
+        let paleta = paletaPredefinida;
         try {
           tema = localStorage.getItem('tema') || 'sistema';
+          const guardada = localStorage.getItem('paleta');
+          if (paletas.includes(guardada)) paleta = guardada;
         } catch {}
         const escuro =
           tema === 'escuro' || (tema === 'sistema' && matchMedia('(prefers-color-scheme: dark)').matches);
         document.documentElement.classList.toggle('dark', escuro);
         document.documentElement.dataset.tema = tema;
+        document.documentElement.dataset.paleta = paleta;
       })();
     </script>
   </head>
@@ -106,9 +114,9 @@ const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
           >
             <Search className="size-4 shrink-0" aria-hidden="true" />
             <span class="hidden truncate sm:inline">{t.pesquisa.placeholder}</span>
-            <kbd class="ml-auto hidden rounded border bg-background px-1.5 font-mono text-[10px] sm:inline">Ctrl K</kbd>
+            <kbd class="ml-auto hidden shrink-0 rounded border bg-background px-1.5 font-mono text-[10px] whitespace-nowrap sm:inline">Ctrl K</kbd>
           </button>
-          <AlternarTema client:load />
+          <Aparencia client:load />
         </div>
       </div>
     </header>

@@ -42,7 +42,7 @@ export default function MenuMovel({ ligacoes, anexos, slugAtual }: Props) {
               aria-current={l.atual ? 'page' : undefined}
               className={cn(
                 'rounded-md px-3 py-2 text-sm hover:bg-accent',
-                l.atual && 'bg-accent font-medium',
+                l.atual && 'bg-selecionado font-medium',
               )}
             >
               {l.rotulo}
@@ -64,7 +64,7 @@ export default function MenuMovel({ ligacoes, anexos, slugAtual }: Props) {
                         aria-current={c.slug === slugAtual ? 'page' : undefined}
                         className={cn(
                           'block rounded-md px-3 py-1.5 text-sm hover:bg-accent',
-                          c.slug === slugAtual && 'bg-accent font-medium',
+                          c.slug === slugAtual && 'bg-selecionado font-medium',
                         )}
                       >
                         {c.conceito}

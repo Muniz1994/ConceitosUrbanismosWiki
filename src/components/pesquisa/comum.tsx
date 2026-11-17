@@ -70,7 +70,7 @@ export function FiltroAnexo({ filtro, setFiltro }: { filtro: Filtro; setFiltro: 
           onClick={() => setFiltro(f)}
           className={cn(
             'rounded-md border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground',
-            filtro === f && 'border-transparent bg-accent font-medium text-foreground',
+            filtro === f && 'border-transparent bg-selecionado font-medium text-foreground',
           )}
         >
           {f === 'todos' ? t.pesquisa.todos : t.anexo[f]}

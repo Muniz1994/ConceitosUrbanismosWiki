@@ -1,3 +1,5 @@
+import { PALETAS, type Modo, type Paleta } from '@/lib/aparencia';
+
 /**
  * Todos os textos da interface, em português europeu.
  * Evitar formas do português do Brasil (p. ex. «Pesquisar», não «Buscar»; «Transferir», não «Baixar»).
@@ -21,12 +23,16 @@ export const t = {
     fecharMenu: 'Fechar menu',
     conceitos: 'Conceitos',
   },
-  tema: {
-    rotulo: 'Tema',
-    claro: 'Claro',
-    escuro: 'Escuro',
-    sistema: 'Sistema',
-    alternar: (atual: string) => `Tema: ${atual}. Mudar tema`,
+  aparencia: {
+    titulo: 'Aparência',
+    /** Nome acessível do botão do cabeçalho: começa por «Aparência» e diz o que está escolhido. */
+    rotulo: (modo: string, paleta: string) => `Aparência: modo ${modo}, paleta ${paleta}`,
+    modo: 'Modo',
+    paleta: 'Paleta',
+    modos: { claro: 'Claro', escuro: 'Escuro', sistema: 'Sistema' } satisfies Record<Modo, string>,
+    /** Nomes próprios das paletas (os do tweakcn), definidos uma só vez em lib/aparencia. */
+    paletas: Object.fromEntries(PALETAS.map((p) => [p.id, p.nome])) as Record<Paleta, string>,
+    predefinida: 'predefinida',
   },
   anexo: {
     I: 'Anexo I',
