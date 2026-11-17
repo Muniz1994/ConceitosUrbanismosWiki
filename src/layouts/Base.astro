@@ -76,7 +76,8 @@ const anexosMenu = (['I', 'II'] as const).map((anexo) => ({
       <div class="mx-auto flex h-14 max-w-screen-2xl items-center gap-2 px-3 sm:px-4">
         <MenuMovel client:idle ligacoes={ligacoes} anexos={anexosMenu} slugAtual={slugAtual} />
         <a href={url('')} class="mr-2 flex shrink-0 items-center gap-2 font-semibold tracking-tight">
-          <span class="grid size-7 place-items-center rounded-md bg-primary text-xs text-primary-foreground" aria-hidden="true">5</span>
+          <img src={url('favicon.svg')} alt="" class="size-7" />
+
           <span class="hidden min-[400px]:inline">{t.site.nome}</span>
         </a>
         <nav aria-label={t.nav.principal} class="hidden items-center gap-1 lg:flex">
